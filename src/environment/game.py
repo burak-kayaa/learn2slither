@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from src.config import Event
 
 from src.environment.board import Board
 from src.environment.snake import Snake
@@ -55,17 +56,17 @@ class Game:
 
     def step(self, action: str) -> StepResult:
         if self.done:
-            return StepResult(event="GAME_ALREADY_OVER", done=True, score_delta=0)
+            return StepResult(event=Event.GAME_ALREADY_OVER, done=True, score_delta=0)
         next_head = self.get_next_head(action)
         if not self.board.is_inside(next_head):
             self.done = True
-            return StepResult(event="WALL_COLLISION", done=True, score_delta=0)
+            return StepResult(event=Event.WALL_COLLISION, done=True, score_delta=0)
         is_green = next_head in self.green_apples
         is_red = next_head == self.red_apple
         grow = is_green
         if self.will_hit_self(next_head, grow=grow):
             self.done = True
-            return StepResult(event="SELF_COLLISION", done=True, score_delta=0)
+            return StepResult(event=Event.SNAKE_COLLISION, done=True, score_delta=0)
         self.snake.move(next_head, grow=grow)
         if is_green:
             self.green_apples.remove(next_head)
@@ -76,19 +77,19 @@ class Game:
                 self.red_apple,
             )
             self.green_apples.add(new_green)
-            return StepResult(event="GREEN_APPLE", done=False, score_delta=1)
+            return StepResult(event=Event.GREEN_APPLE, done=False, score_delta=1)
         if is_red:
             self.snake.shrink(1)
             if len(self.snake) == 0:
                 self.done = True
-                return StepResult(event="ZERO_LENGTH", done=True, score_delta=-1)
+                return StepResult(event=Event.ZERO_LENGTH, done=True, score_delta=-1)
             self.red_apple = AppleManager.spawn_red(
                 self.board,
                 self.snake,
                 self.green_apples,
             )
-            return StepResult(event="RED_APPLE", done=False, score_delta=-1)
-        return StepResult(event="MOVE", done=False, score_delta=0)
+            return StepResult(event=Event.RED_APPLE, done=False, score_delta=-1)
+        return StepResult(event=Event.MOVE, done=False, score_delta=0)
 
     def get_state_snapshot(self) -> dict:
         return {

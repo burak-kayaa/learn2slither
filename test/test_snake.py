@@ -1,15 +1,7 @@
-
-
 from src.config import Direction
 from src.environment.game import Position
 from src.environment.snake import Snake
 
-    # def move(self, new_head: Position, grow: bool = False) -> None:
-    #     """Move the snake to a new head position. If grow is True, the snake will grow by one segment.
-    #     """
-    #     self.body.appendleft(new_head)
-    #     if not grow:
-    #         self.body.pop()
 
 def test_snake_initialization() -> None:
     initial_body = [
@@ -22,6 +14,7 @@ def test_snake_initialization() -> None:
     assert list(snake.body) == initial_body
     assert snake.head == Position([2, 2])
     assert snake.tail == Position([0, 2])
+
     
 def test_snake_initialization_empty_body() -> None:
     try:
@@ -30,15 +23,14 @@ def test_snake_initialization_empty_body() -> None:
     except ValueError as e:
         assert str(e) == "Initial body cannot be empty"
 
+
 def test_snake_moves_right() -> None:
     snake = Snake([
         Position([2, 2]),
         Position([1, 2]),
         Position([0, 2]),
     ])
-
     snake.move(Position([3, 2]))
-
     assert list(snake.body) == [
         Position([3, 2]),
         Position([2, 2]),
@@ -52,9 +44,7 @@ def test_snake_grows_when_requested() -> None:
         Position([1, 2]),
         Position([0, 2]),
     ])
-
     snake.move(Position([3, 2]), grow=True)
-
     assert list(snake.body) == [
         Position([3, 2]),
         Position([2, 2]),
@@ -69,16 +59,12 @@ def test_snake_shrinks() -> None:
         Position([1, 2]),
         Position([0, 2]),
     ])
-
     snake.shrink()
-
     assert list(snake.body) == [
         Position([2, 2]),
         Position([1, 2]),
     ]
-
     snake.shrink(2)
-
     assert list(snake.body) == []
     
     
@@ -88,7 +74,6 @@ def test_snake_occupies() -> None:
         Position([1, 2]),
         Position([0, 2]),
     ])
-
     assert snake.occupies(Position([2, 2])) == True
     assert snake.occupies(Position([1, 2])) == True
     assert snake.occupies(Position([0, 2])) == True
@@ -97,7 +82,6 @@ def test_snake_occupies() -> None:
     
 def test_snake_create_default() -> None:
     snake = Snake.create_default(board_width=10, board_height=10)
-
     assert list(snake.body) == [
         Position([5, 5]),
         Position([4, 5]),
@@ -111,7 +95,6 @@ def test_snake_grows_and_shrinks() -> None:
         Position([1, 2]),
         Position([0, 2]),
     ])
-
     snake.move(Position([3, 2]), grow=True)
     assert list(snake.body) == [
         Position([3, 2]),
@@ -119,7 +102,6 @@ def test_snake_grows_and_shrinks() -> None:
         Position([1, 2]),
         Position([0, 2]),
     ]
-
     snake.shrink()
     assert list(snake.body) == [
         Position([3, 2]),

@@ -17,3 +17,19 @@ class Direction:
     LEFT = LEFT
     DOWN = DOWN
     RIGHT = RIGHT
+    
+class CellType:
+    EMPTY = "0"
+    SNAKE = "S"
+    GREEN_APPLE = "G"
+    RED_APPLE = "R"
+    WALL = "W"
+    
+class Event:
+    GAME_ALREADY_OVER = "GAME_ALREADY_OVER"
+    SNAKE_COLLISION = "SNAKE_COLLISION"
+    WALL_COLLISION = "WALL_COLLISION"
+    ZERO_LENGTH = "ZERO_LENGTH"
+    GREEN_APPLE = "GREEN_APPLE"
+    RED_APPLE = "RED_APPLE"
+    MOVE = "MOVE"

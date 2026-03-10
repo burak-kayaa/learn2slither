@@ -1,6 +1,7 @@
 """Board class for the Snake game."""
 
 import random
+from src.config import CellType
 from src.config import BOARD_HEIGHT, BOARD_WIDTH
 from typing import Iterable
 
@@ -36,17 +37,18 @@ class Board:
         return random.choice(empty)
     
     def print_board(self, snake_positions: Iterable[Position], green_apples: Iterable[Position], red_apple: Position) -> None:
+        print(CellType.WALL * (self.width + 2))
         for y in range(self.height):
             row = ""
             for x in range(self.width):
                 pos = (x, y)
                 if pos in snake_positions:
-                    row += "S "
+                    row += CellType.SNAKE
                 elif pos in green_apples:
-                    row += "G "
+                    row += CellType.GREEN_APPLE
                 elif pos == red_apple:
-                    row += "R "
+                    row += CellType.RED_APPLE
                 else:
-                    row += ". "
-            print(row)
-        print()
+                    row += CellType.EMPTY
+            print(CellType.WALL + row + CellType.WALL)
+        print(CellType.WALL * (self.width + 2))
