@@ -1,5 +1,5 @@
 all:
-	@uv run ./src/main.py
+	@uv run -m src.main
 
 t:
 	@uv run pytest
