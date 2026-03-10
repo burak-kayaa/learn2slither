@@ -48,7 +48,7 @@ def test_game_step_self_collision():
     game.step("LEFT")
     game.step("DOWN")
     result = game.step("RIGHT")
-    assert result.event == Event.SNAKE_COLLISION
+    assert result.event == Event.SELF_COLLISION
     assert result.done
     assert game.done
     

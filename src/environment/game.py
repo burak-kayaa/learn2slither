@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from src.config import Event
+from src.config import Event, StepResult
 
 from src.environment.board import Board
 from src.environment.snake import Snake
@@ -13,13 +13,6 @@ DIRECTION_DELTAS = {
     "LEFT": (-1, 0),
     "RIGHT": (1, 0),
 }
-
-
-@dataclass
-class StepResult:
-    event: str
-    done: bool
-    score_delta: int = 0
 
 
 class Game:
@@ -66,7 +59,7 @@ class Game:
         grow = is_green
         if self.will_hit_self(next_head, grow=grow):
             self.done = True
-            return StepResult(event=Event.SNAKE_COLLISION, done=True, score_delta=0)
+            return StepResult(event=Event.SELF_COLLISION, done=True, score_delta=0)
         self.snake.move(next_head, grow=grow)
         if is_green:
             self.green_apples.remove(next_head)
