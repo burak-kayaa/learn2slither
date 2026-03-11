@@ -78,12 +78,9 @@ def run_episode(env: Game, agent: QLearningAgent, episode_index: int) -> Episode
 
 def train(env: Game, agent: QLearningAgent, sessions: int) -> list[EpisodeMetrics]:
     all_metrics = []
-
-    # Epsilon decay otomatik ayarı: session'ların %80'inde epsilon_min'e ulaş
     exploit_start = max(1, int(sessions * 0.8))
     if agent.epsilon > agent.epsilon_min:
         agent.epsilon_decay = (agent.epsilon_min / agent.epsilon) ** (1.0 / exploit_start)
-
     for episode in range(1, sessions + 1):
         metrics = run_episode(
             env=env,

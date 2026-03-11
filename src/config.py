@@ -10,6 +10,7 @@ INITIAL_SNAKE_LENGTH: int = 3
 GREEN_APPLE_COUNT: int = 2
 RED_APPLE_COUNT: int = 1
 
+MODEL_SAVE_PATH_SRC: str = "./models"
 
 @dataclass
 class StepResult:

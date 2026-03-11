@@ -1,7 +1,10 @@
+import ast
 from dataclasses import dataclass, field
+import json
+from pathlib import Path
 import random
 
-from src.config import RELATIVE_ACTIONS
+from src.config import MODEL_SAVE_PATH_SRC, RELATIVE_ACTIONS
 
 
 @dataclass
@@ -56,3 +59,50 @@ class QLearningAgent:
         if not self.learning_enabled:
             return
         self.epsilon = max(self.epsilon * self.epsilon_decay, self.epsilon_min)
+        
+        
+    def to_dict(self) -> dict:
+        return {
+            "alpha": self.alpha,
+            "gamma": self.gamma,
+            "epsilon": self.epsilon,
+            "epsilon_decay": self.epsilon_decay,
+            "epsilon_min": self.epsilon_min,
+            "learning_enabled": self.learning_enabled,
+            "q_table": {
+                repr(state_key): action_values
+                for state_key, action_values in self.q_table.items()
+            },
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict) -> "QLearningAgent":
+        agent = cls(
+            alpha=data["alpha"],
+            gamma=data["gamma"],
+            epsilon=data["epsilon"],
+            epsilon_decay=data.get("epsilon_decay", 0.995),
+            epsilon_min=data.get("epsilon_min", 0.05),
+            learning_enabled=data.get("learning_enabled", True),
+        )
+
+        raw_q_table = data.get("q_table", {})
+        agent.q_table = {
+            ast.literal_eval(state_key): action_values
+            for state_key, action_values in raw_q_table.items()
+        }
+        return agent
+
+    def save(self, session: int) -> None:
+        path = Path(MODEL_SAVE_PATH_SRC) / f"q_learning_agent_{session}.json"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with path.open("w", encoding="utf-8") as f:
+            json.dump(self.to_dict(), f, ensure_ascii=False, indent=2)
+
+    @classmethod
+    def load(cls, path: str | Path) -> "QLearningAgent":
+        print(f"Loading agent from {path}...")
+        path = Path(path)
+        with path.open("r", encoding="utf-8") as f:
+            data = json.load(f)
+        return cls.from_dict(data)
