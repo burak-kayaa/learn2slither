@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from src.config import Event, StepResult
+from src.config import ACTIONS, OPPOSITE_DIRECTIONS, Event, StepResult
 
 from src.environment.board import Board
 from src.environment.snake import Snake
@@ -106,3 +106,7 @@ class Game:
         for row in grid:
             print(" ".join(row))
         print()
+    
+    def get_valid_actions(self) -> list[str]:
+        opposite = OPPOSITE_DIRECTIONS[self.snake.direction]
+        return [action for action in ACTIONS if action != opposite]

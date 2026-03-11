@@ -4,10 +4,11 @@ from src.environment.game import DIRECTION_DELTAS, Game
 
 class VisionInterpreter:
     @staticmethod
-    def extract(game: Game) -> dict[str, list[str]]:
+    def extract(game: Game) -> dict[str, str]:
         head = game.snake.head
         directions = ["UP", "DOWN", "LEFT", "RIGHT"]
-        vision = {dir: [] for dir in directions}
+        vision = {}
+        snake_set = set(game.snake.as_list())
         for dir in directions:
             dx, dy = DIRECTION_DELTAS[dir]
             x, y = head
@@ -15,41 +16,24 @@ class VisionInterpreter:
                 x += dx
                 y += dy
                 pos = (x, y)
-
                 if not game.board.is_inside(pos):
-                    vision[dir].append("WALL")
+                    vision[dir] = "WALL"
                     break
-                elif pos in game.snake.as_list():
-                    vision[dir].append("SNAKE")
+                elif pos in snake_set:
+                    vision[dir] = "SNAKE"
+                    break
                 elif pos in game.green_apples:
-                    vision[dir].append("GREEN_APPLE")
+                    vision[dir] = "GREEN_APPLE"
+                    break
                 elif pos == game.red_apple:
-                    vision[dir].append("RED_APPLE")
-                else:
-                    vision[dir].append("EMPTY")
+                    vision[dir] = "RED_APPLE"
+                    break
         return vision
 
     @staticmethod
-    def print_vision(vision: dict[str, list[str]]) -> None:
+    def print_vision(vision: dict[str, str]) -> None:
         def symbol(cell: str) -> str:
-            if cell == "WALL":
-                return "W"
-            elif cell == "SNAKE":
-                return "S"
-            elif cell == "GREEN_APPLE":
-                return "G"
-            elif cell == "RED_APPLE":
-                return "R"
-            else:
-                return "0"
-        up = [symbol(c) for c in reversed(vision["UP"])]
-        down = [symbol(c) for c in vision["DOWN"]]
-        left = [symbol(c) for c in reversed(vision["LEFT"])]
-        right = [symbol(c) for c in vision["RIGHT"]]
-        padding = " " * (len(left))
-        for cell in up:
-            print(f"{padding}{cell}")
-        middle_row = left + ["H"] + right
-        print("".join(middle_row))
-        for cell in down:
-            print(f"{padding}{cell}")
+            return {"WALL": "W", "SNAKE": "S", "GREEN_APPLE": "G", "RED_APPLE": "R"}.get(cell, "0")
+        print(f"  {symbol(vision['UP'])}")
+        print(f"{symbol(vision['LEFT'])} H {symbol(vision['RIGHT'])}")
+        print(f"  {symbol(vision['DOWN'])}")

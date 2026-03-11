@@ -1,5 +1,7 @@
 from collections import deque
 
+from src.config import Direction
+
 Position = tuple[int, int]
 
 
@@ -8,6 +10,7 @@ class Snake:
         if not initial_body:
             raise ValueError("Initial body cannot be empty")
         self.body = deque(initial_body)
+        self.direction = self._infer_initial_direction()
 
     @property
     def head(self) -> Position:
@@ -37,6 +40,17 @@ class Snake:
         for _ in range(amount):
             if self.body:
                 self.body.pop()
+
+
+    def _infer_initial_direction(self) -> str:
+        if len(self.body) < 2:
+            return Direction.RIGHT
+        head_x, head_y = self.body[0]
+        neck_x, neck_y = self.body[1]
+        if head_x == neck_x:
+            return Direction.DOWN if head_y > neck_y else Direction.UP
+        else:
+            return Direction.RIGHT if head_x > neck_x else Direction.LEFT
 
     @classmethod
     def create_default(cls, board_width: int = 10, board_height: int = 10) -> "Snake":

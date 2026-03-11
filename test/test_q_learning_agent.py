@@ -6,29 +6,32 @@ import random
 
 
 
+ALL_ACTIONS = ["UP", "LEFT", "DOWN", "RIGHT"]
+
+
 def test_q_learning_agent():
     agent = QLearningAgent(q_table={})
     state_key = (("0", "0"), ("0", "0"), ("0", "0"), ("0", "0"))
     action_values = agent.get_action_values(state_key)
     assert action_values == {"UP": 0.0, "LEFT": 0.0, "DOWN": 0.0, "RIGHT": 0.0}
     best_action = agent.best_action(state_key)
-    assert best_action in ["UP", "LEFT", "DOWN", "RIGHT"]
-    selected_action = agent.select_action(state_key)
-    assert selected_action in ["UP", "LEFT", "DOWN", "RIGHT"]
+    assert best_action in ALL_ACTIONS
+    selected_action = agent.select_action(state_key, ALL_ACTIONS)
+    assert selected_action in ALL_ACTIONS
     
     
 def test_q_learning_agent_exploration():
     agent = QLearningAgent(q_table={}, epsilon=1.0)
     state_key = (("0", "0"), ("0", "0"), ("0", "0"), ("0", "0"))
-    selected_action = agent.select_action(state_key)
-    assert selected_action in ["UP", "LEFT", "DOWN", "RIGHT"]
+    selected_action = agent.select_action(state_key, ALL_ACTIONS)
+    assert selected_action in ALL_ACTIONS
     
     
 def test_q_learning_agent_exploitation():
     agent = QLearningAgent(q_table={}, epsilon=0.0)
     state_key = (("0", "0"), ("0", "0"), ("0", "0"), ("0", "0"))
     agent.q_table[state_key] = {"UP": 1.0, "LEFT": 0.5, "DOWN": 0.2, "RIGHT": 0.3}
-    selected_action = agent.select_action(state_key)
+    selected_action = agent.select_action(state_key, ALL_ACTIONS)
     assert selected_action == "UP"
 
 

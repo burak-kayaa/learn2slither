@@ -4,18 +4,24 @@ from src.state.vision import VisionInterpreter
 from src.state.encoder import StateEncoder
 from src.agent.q_learning_agent import QLearningAgent
 from src.agent.reward import compute_reward
+from src.agent.trainer import run_episode, train
+from src.utils.training_report import summarize_metrics, death_reason_counts
 
 def main():
-    game = Game(width=5, height=5)
-    game.board.print_board(game.snake.as_list(), game.green_apples, game.red_apple)
-    vision = VisionInterpreter.extract(game)
-    state = StateEncoder.encode(vision)
-    agent = QLearningAgent(q_table={})
-    action_values = agent.get_action_values(state)
-    print("Action values:", action_values)
-    step_result = game.step("UP")
-    print("Step result:", step_result)
-    
+    env = Game()
+    agent = QLearningAgent()
+    sessions = 10000
+
+    episode_metrics_list = train(env, agent, sessions)
+
+    first_100 = episode_metrics_list[:100]
+    last_100 = episode_metrics_list[-100:]
+
+    print("FIRST 100:", summarize_metrics(first_100))
+    print("LAST 100:", summarize_metrics(last_100))
+    print("DEATH REASONS:", death_reason_counts(episode_metrics_list))
+    print("FINAL EPSILON:", agent.epsilon)
+    print("Q-TABLE SIZE:", len(agent.q_table))
 
 if __name__ == "__main__":
     main()

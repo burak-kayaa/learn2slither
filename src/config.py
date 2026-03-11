@@ -63,3 +63,16 @@ class Event(str, Enum):
     GREEN_APPLE = "GREEN_APPLE"
     RED_APPLE = "RED_APPLE"
     MOVE = "MOVE"
+    
+class EpisodeStats:
+    def __init__(self, steps: int, total_reward: float, score: int):
+        self.steps = steps
+        self.total_reward = total_reward
+        self.score = score
+        
+OPPOSITE_DIRECTIONS = {
+    Direction.UP: Direction.DOWN,
+    Direction.DOWN: Direction.UP,
+    Direction.LEFT: Direction.RIGHT,
+    Direction.RIGHT: Direction.LEFT,
+}
