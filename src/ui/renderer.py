@@ -5,7 +5,7 @@ import pygame
 @dataclass
 class RenderConfig:
     cell_size: int = 60
-    delay_ms: int = 10
+    delay_ms: int = 1
     step_mode: bool = False
     enabled: bool = True
     

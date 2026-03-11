@@ -10,6 +10,9 @@ INITIAL_SNAKE_LENGTH: int = 3
 GREEN_APPLE_COUNT: int = 2
 RED_APPLE_COUNT: int = 1
 
+MAX_STEPS_PER_EPISODE: int = BOARD_WIDTH * BOARD_HEIGHT * 4
+LOOP_WINDOW: int = 20
+
 MODEL_SAVE_PATH_SRC: str = "./models"
 
 @dataclass
@@ -22,8 +25,9 @@ class StepResult:
 class RewardConfig:
     green_apple: float = 10.0
     red_apple: float = -8.0
-    step: float = -0.3
+    step: float = -0.4
     game_over: float = -20.0
+    loop_penalty: float = -4.0
 
 
 class Direction:
@@ -73,7 +77,7 @@ class Event(str, Enum):
     GREEN_APPLE = "GREEN_APPLE"
     RED_APPLE = "RED_APPLE"
     MOVE = "MOVE"
-    
+    MAX_STEPS = "MAX_STEPS"
 class EpisodeStats:
     def __init__(self, steps: int, total_reward: float, score: int):
         self.steps = steps
@@ -93,3 +97,10 @@ class Colors:
     SNAKE = (50, 120, 255)
     GREEN_APPLE = (0, 200, 0)
     RED_APPLE = (220, 40, 40)
+    
+REASON_LABELS = {
+    Event.WALL_COLLISION: "Wall Collision",
+    Event.SELF_COLLISION: "Self Collision",
+    Event.ZERO_LENGTH: "Zero Length",
+    Event.MAX_STEPS: "Max Steps",
+}

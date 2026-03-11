@@ -11,10 +11,10 @@ def test_vision_extraction():
     game.green_apples = [(3, 2), (4, 2)]
     game.red_apple = (2, 3)
     vision = VisionInterpreter.extract(game)
-    assert vision["UP"] == "SNAKE"        # (2,1) snake body — duvardan önce bulunur
-    assert vision["DOWN"] == "RED_APPLE"  # (2,3) red apple
-    assert vision["LEFT"] == "WALL"       # (1,2),(0,2) boş → (−1,2) dışarı → WALL
-    assert vision["RIGHT"] == "GREEN_APPLE"  # (3,2) green apple
+    assert vision["UP"] == ("SNAKE", "CLOSE")         # (2,1) dist=1 → CLOSE
+    assert vision["DOWN"] == ("RED_APPLE", "CLOSE")   # (2,3) dist=1 → CLOSE
+    assert vision["LEFT"] == ("WALL", "NEAR")          # (1,2),(0,2) boş → (-1,2) dist=3 → NEAR
+    assert vision["RIGHT"] == ("GREEN_APPLE", "CLOSE") # (3,2) dist=1 → CLOSE
 
 
 def test_vision_empty():
@@ -23,7 +23,7 @@ def test_vision_empty():
     game.green_apples = []
     game.red_apple = (4, 4)
     vision = VisionInterpreter.extract(game)
-    assert vision["UP"] == "WALL"    # hemen dışarı
-    assert vision["DOWN"] == "WALL"  # (0,1)(0,2)(0,3)(0,4) boş → (0,5) dışarı
-    assert vision["LEFT"] == "WALL"  # hemen dışarı
-    assert vision["RIGHT"] == "WALL" # (1,0)..(4,0) boş → (5,0) dışarı
+    assert vision["UP"] == ("WALL", "CLOSE")    # (0,-1) dist=1
+    assert vision["DOWN"] == ("WALL", "FAR")    # (0,5) dist=5
+    assert vision["LEFT"] == ("WALL", "CLOSE")  # (-1,0) dist=1
+    assert vision["RIGHT"] == ("WALL", "FAR")   # (5,0) dist=5

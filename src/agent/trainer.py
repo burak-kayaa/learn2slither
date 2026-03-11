@@ -5,8 +5,9 @@ from src.state.encoder import StateEncoder
 from src.agent.q_learning_agent import QLearningAgent
 
 from src.agent.reward import compute_reward
-from src.config import Event, RELATIVE_ACTIONS, RELATIVE_TO_ABSOLUTE
+from src.config import REASON_LABELS, Event, RELATIVE_ACTIONS, RELATIVE_TO_ABSOLUTE, MAX_STEPS_PER_EPISODE, LOOP_WINDOW, RewardConfig
 import time
+from collections import deque
 from dataclasses import dataclass
 
 from src.ui.renderer import GameRenderer
@@ -35,6 +36,7 @@ def run_episode(env: Game, agent: QLearningAgent, episode_index: int, renderer: 
     max_length = len(env.snake)
     death_reason = None
     done = False
+    visited_positions: deque = deque(maxlen=LOOP_WINDOW)
     while not done:
         vision = VisionInterpreter.extract(env)
         state_key = StateEncoder.encode(vision, env.snake.direction)
@@ -42,10 +44,16 @@ def run_episode(env: Game, agent: QLearningAgent, episode_index: int, renderer: 
         abs_action = RELATIVE_TO_ABSOLUTE[env.snake.direction][rel_action]
         step_result = env.step(abs_action)
         reward = compute_reward(step_result)
+        # Apply loop penalty when the snake revisits a recent position
+        if not step_result.done and len(env.snake) > 0:
+            if env.snake.head in visited_positions:
+                reward += RewardConfig.loop_penalty
+            visited_positions.append(env.snake.head)
         steps += 1
         total_reward += reward
         if step_result.event == Event.GREEN_APPLE:
             green_apples_eaten += 1
+            visited_positions.clear()  # reset loop window after eating
         elif step_result.event == Event.RED_APPLE:
             red_apples_eaten += 1
         max_length = max(max_length, len(env.snake))
@@ -66,7 +74,14 @@ def run_episode(env: Game, agent: QLearningAgent, episode_index: int, renderer: 
         if renderer:
             renderer.render(env)
         done = step_result.done
+        # Hard cap: end episode if agent is stuck looping
+        if not done and steps >= MAX_STEPS_PER_EPISODE:
+            death_reason = "MAX_STEPS"
+            done = True
+    if renderer:
+        label = REASON_LABELS.get(str(death_reason), str(death_reason))
     duration_seconds = time.perf_counter() - start_time
+    print(f"[Episode {episode_index}] Game Over - Length: {len(env.snake)} - Steps: {steps}")
     return EpisodeMetrics(
         episode_index=episode_index,
         steps=steps,

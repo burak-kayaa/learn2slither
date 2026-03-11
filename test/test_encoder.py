@@ -6,34 +6,34 @@ from src.state.encoder import StateEncoder
 def test_state_encoder_facing_right():
     # Facing RIGHT: ahead=RIGHT, rel_left=UP, rel_right=DOWN
     vision = {
-        "UP": "WALL",
-        "DOWN": "GREEN_APPLE",
-        "LEFT": "SNAKE",
-        "RIGHT": "EMPTY",
+        "UP": ("WALL", "CLOSE"),
+        "DOWN": ("GREEN_APPLE", "NEAR"),
+        "LEFT": ("SNAKE", "FAR"),
+        "RIGHT": ("WALL", "FAR"),
     }
-    # ahead=EMPTY, rel_left=WALL, rel_right=GREEN_APPLE
-    assert StateEncoder.encode(vision, "RIGHT") == ("EMPTY", "WALL", "GREEN_APPLE")
+    # ahead=(WALL,FAR), rel_left=(WALL,CLOSE), rel_right=(GREEN_APPLE,NEAR)
+    assert StateEncoder.encode(vision, "RIGHT") == ("WALL", "FAR", "WALL", "CLOSE", "GREEN_APPLE", "NEAR")
 
 
 def test_state_encoder_facing_up():
     # Facing UP: ahead=UP, rel_left=LEFT, rel_right=RIGHT
     vision = {
-        "UP": "GREEN_APPLE",
-        "DOWN": "SNAKE",
-        "LEFT": "WALL",
-        "RIGHT": "EMPTY",
+        "UP": ("GREEN_APPLE", "NEAR"),
+        "DOWN": ("SNAKE", "CLOSE"),
+        "LEFT": ("WALL", "CLOSE"),
+        "RIGHT": ("WALL", "FAR"),
     }
-    # ahead=GREEN_APPLE, rel_left=WALL, rel_right=EMPTY
-    assert StateEncoder.encode(vision, "UP") == ("GREEN_APPLE", "WALL", "EMPTY")
+    # ahead=(GREEN_APPLE,NEAR), rel_left=(WALL,CLOSE), rel_right=(WALL,FAR)
+    assert StateEncoder.encode(vision, "UP") == ("GREEN_APPLE", "NEAR", "WALL", "CLOSE", "WALL", "FAR")
 
 
 def test_state_encoder_facing_down():
     # Facing DOWN: ahead=DOWN, rel_left=RIGHT, rel_right=LEFT
     vision = {
-        "UP": "WALL",
-        "DOWN": "GREEN_APPLE",
-        "LEFT": "EMPTY",
-        "RIGHT": "SNAKE",
+        "UP": ("WALL", "FAR"),
+        "DOWN": ("GREEN_APPLE", "NEAR"),
+        "LEFT": ("WALL", "CLOSE"),
+        "RIGHT": ("SNAKE", "CLOSE"),
     }
-    # ahead=GREEN_APPLE, rel_left=SNAKE, rel_right=EMPTY
-    assert StateEncoder.encode(vision, "DOWN") == ("GREEN_APPLE", "SNAKE", "EMPTY")
+    # ahead=(GREEN_APPLE,NEAR), rel_left=(SNAKE,CLOSE), rel_right=(WALL,CLOSE)
+    assert StateEncoder.encode(vision, "DOWN") == ("GREEN_APPLE", "NEAR", "SNAKE", "CLOSE", "WALL", "CLOSE")
