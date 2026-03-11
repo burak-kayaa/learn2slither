@@ -10,7 +10,7 @@ from src.utils.training_report import summarize_metrics, death_reason_counts
 def main():
     env = Game()
     agent = QLearningAgent()
-    sessions = 10000
+    sessions = 1000
 
     episode_metrics_list = train(env, agent, sessions)
 

@@ -39,6 +39,15 @@ ACTIONS: list[str] = [
     Direction.RIGHT,
 ]
 
+RELATIVE_ACTIONS: list[str] = ["AHEAD", "TURN_LEFT", "TURN_RIGHT"]
+
+RELATIVE_TO_ABSOLUTE: dict[str, dict[str, str]] = {
+    Direction.RIGHT: {"AHEAD": Direction.RIGHT, "TURN_LEFT": Direction.UP,   "TURN_RIGHT": Direction.DOWN},
+    Direction.LEFT:  {"AHEAD": Direction.LEFT,  "TURN_LEFT": Direction.DOWN, "TURN_RIGHT": Direction.UP},
+    Direction.UP:    {"AHEAD": Direction.UP,    "TURN_LEFT": Direction.LEFT,  "TURN_RIGHT": Direction.RIGHT},
+    Direction.DOWN:  {"AHEAD": Direction.DOWN,  "TURN_LEFT": Direction.RIGHT, "TURN_RIGHT": Direction.LEFT},
+}
+
 DIRECTION_DELTAS: dict[str, tuple[int, int]] = {
     Direction.UP: (0, -1),
     Direction.LEFT: (-1, 0),

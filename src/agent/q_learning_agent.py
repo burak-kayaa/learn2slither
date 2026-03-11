@@ -1,8 +1,7 @@
 from dataclasses import dataclass, field
 import random
 
-from src.config import ACTIONS, Direction
-
+from src.config import RELATIVE_ACTIONS
 
 
 @dataclass
@@ -17,18 +16,18 @@ class QLearningAgent:
 
     def ensure_state_exists(self, state_key: tuple) -> None:
         if state_key not in self.q_table:
-            self.q_table[state_key] = {action: 0.0 for action in ACTIONS}
+            self.q_table[state_key] = {action: 0.0 for action in RELATIVE_ACTIONS}
 
     def get_action_values(self, state_key: tuple) -> dict[str, float]:
         self.ensure_state_exists(state_key)
         return self.q_table[state_key]
-    
+
     def best_action(self, state_key: tuple) -> str:
         action_values = self.get_action_values(state_key)
         max_value = max(action_values.values())
-        best_actions = [action for action, value in action_values.items() if value == max_value]
+        best_actions = [a for a, v in action_values.items() if v == max_value]
         return random.choice(best_actions)
-    
+
     def select_action(self, state_key: tuple, valid_actions: list[str]) -> str:
         if random.random() < self.epsilon:
             return random.choice(valid_actions)
@@ -36,7 +35,7 @@ class QLearningAgent:
         valid_q = {a: action_values[a] for a in valid_actions}
         max_val = max(valid_q.values())
         return random.choice([a for a, v in valid_q.items() if v == max_val])
-        
+
     def learn(self, state_key: tuple, action: str, reward: float, next_state_key: tuple, done: bool, valid_next_actions: list[str] | None = None) -> None:
         if not self.learning_enabled:
             return

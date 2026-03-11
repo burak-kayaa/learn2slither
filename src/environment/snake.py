@@ -32,9 +32,22 @@ class Snake:
     def move(self, new_head: Position, grow: bool = False) -> None:
         """Move the snake to a new head position. If grow is True, the snake will grow by one segment.
         """
+        self.direction = self._direction_from_move(new_head)
         self.body.appendleft(new_head)
         if not grow:
             self.body.pop()
+
+    def _direction_from_move(self, new_head: Position) -> str:
+        hx, hy = self.head
+        nx, ny = new_head
+        dx, dy = nx - hx, ny - hy
+        if dx == 1:
+            return Direction.RIGHT
+        if dx == -1:
+            return Direction.LEFT
+        if dy == 1:
+            return Direction.DOWN
+        return Direction.UP
 
     def shrink(self, amount: int = 1) -> None:
         for _ in range(amount):

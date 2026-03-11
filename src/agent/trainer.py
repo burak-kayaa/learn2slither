@@ -2,12 +2,10 @@ from src.environment.board import Board
 from src.environment.game import Game
 from src.state.vision import VisionInterpreter
 from src.state.encoder import StateEncoder
-from src.agent.q_learning_agent import QLearningAgent 
+from src.agent.q_learning_agent import QLearningAgent
 
-from src.agent.reward import compute_reward, RewardConfig
-from src.state.encoder import StateEncoder
-from src.state.vision import VisionInterpreter
-from src.config import Event
+from src.agent.reward import compute_reward
+from src.config import Event, RELATIVE_ACTIONS, RELATIVE_TO_ABSOLUTE
 import time
 from dataclasses import dataclass
 
@@ -38,9 +36,9 @@ def run_episode(env: Game, agent: QLearningAgent, episode_index: int) -> Episode
     while not done:
         vision = VisionInterpreter.extract(env)
         state_key = StateEncoder.encode(vision, env.snake.direction)
-        valid_actions = env.get_valid_actions()
-        action = agent.select_action(state_key, valid_actions)
-        step_result = env.step(action)
+        rel_action = agent.select_action(state_key, RELATIVE_ACTIONS)
+        abs_action = RELATIVE_TO_ABSOLUTE[env.snake.direction][rel_action]
+        step_result = env.step(abs_action)
         reward = compute_reward(step_result)
         steps += 1
         total_reward += reward
@@ -52,18 +50,16 @@ def run_episode(env: Game, agent: QLearningAgent, episode_index: int) -> Episode
         if step_result.done:
             death_reason = step_result.event
             next_state_key = state_key
-            valid_next_actions = None
         else:
             next_vision = VisionInterpreter.extract(env)
             next_state_key = StateEncoder.encode(next_vision, env.snake.direction)
-            valid_next_actions = env.get_valid_actions()
         agent.learn(
             state_key=state_key,
-            action=action,
+            action=rel_action,
             reward=reward,
             next_state_key=next_state_key,
             done=step_result.done,
-            valid_next_actions=valid_next_actions,
+            valid_next_actions=RELATIVE_ACTIONS,
         )
         done = step_result.done
     duration_seconds = time.perf_counter() - start_time
@@ -82,6 +78,11 @@ def run_episode(env: Game, agent: QLearningAgent, episode_index: int) -> Episode
 
 def train(env: Game, agent: QLearningAgent, sessions: int) -> list[EpisodeMetrics]:
     all_metrics = []
+
+    # Epsilon decay otomatik ayarı: session'ların %80'inde epsilon_min'e ulaş
+    exploit_start = max(1, int(sessions * 0.8))
+    if agent.epsilon > agent.epsilon_min:
+        agent.epsilon_decay = (agent.epsilon_min / agent.epsilon) ** (1.0 / exploit_start)
 
     for episode in range(1, sessions + 1):
         metrics = run_episode(
