@@ -7,4 +7,6 @@ def parse_args():
     parser.add_argument("--load", type=str, help="Path to load a pre-trained agent")
     parser.add_argument("--dontlearn", action="store_true", help="Disable learning (useful for evaluation)")
     parser.add_argument("--render", action="store_true", help="Render the game during training")
+    parser.add_argument("--step-by-step", action="store_true", help="Wait for user input between steps when rendering")
+    parser.add_argument("--delay", type=int, default=0, help="Delay in milliseconds between steps when rendering (overridden by --step-by-step)")
     return parser.parse_args()

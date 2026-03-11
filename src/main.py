@@ -13,7 +13,11 @@ from src.utils.training_report import print_metrics_summary, summarize_metrics, 
 def main():
     args = parse_args()
     env = Game()
-    renderer = GameRenderer(10, 10, RenderConfig())
+    renderer = GameRenderer(10, 10, RenderConfig(
+        delay_ms=args.delay if not args.step_by_step else 0,
+        step_mode=args.step_by_step,
+        enabled=args.render
+    ))
     if args.load:
         agent = QLearningAgent.load(args.load)
     else:

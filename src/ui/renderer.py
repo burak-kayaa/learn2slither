@@ -47,6 +47,17 @@ class GameRenderer:
         elif self.config.delay_ms > 0:
             pygame.time.delay(self.config.delay_ms)
             
+    def wait_for_step(self) -> None:
+        waiting = True
+        while waiting:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    raise SystemExit
+                elif event.type == pygame.KEYDOWN:
+                    waiting = False
+    
+            
     def _draw_grid(self) -> None:
         cell = self.config.cell_size
         color = (60, 60, 60)
