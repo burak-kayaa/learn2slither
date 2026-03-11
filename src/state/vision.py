@@ -1,5 +1,4 @@
-
-
+from src.config import ACTIONS, CellType
 from src.environment.game import DIRECTION_DELTAS, Game
 
 
@@ -22,10 +21,9 @@ class VisionInterpreter:
         Distance is bucketed as: CLOSE (1), NEAR (2-3), FAR (4+).
         """
         head = game.snake.head
-        directions = ["UP", "DOWN", "LEFT", "RIGHT"]
         vision = {}
         snake_set = set(game.snake.as_list())
-        for dir in directions:
+        for dir in ACTIONS:
             dx, dy = DIRECTION_DELTAS[dir]
             x, y = head
             dist = 0
@@ -49,10 +47,48 @@ class VisionInterpreter:
         return vision
 
     @staticmethod
-    def print_vision(vision: dict[str, tuple[str, str]]) -> None:
-        def symbol(cell: tuple[str, str]) -> str:
-            obj_sym = {"WALL": "W", "SNAKE": "S", "GREEN_APPLE": "G", "RED_APPLE": "R"}.get(cell[0], "0")
-            return f"{obj_sym}{cell[1][0]}"  # e.g. "WC" for WALL/CLOSE
-        print(f"   {symbol(vision['UP'])}")
-        print(f"{symbol(vision['LEFT'])}  H  {symbol(vision['RIGHT'])}")
-        print(f"   {symbol(vision['DOWN'])}")
+    def print_cross(game: Game, action: str) -> None:
+        """Print the agent's full directional vision as a cross to stdout.
+
+        Shows every cell seen along each axis from the snake's head,
+        using: H=head, 0=empty, W=wall, S=snake, G=green apple, R=red apple.
+        """
+        head = game.snake.head
+        snake_set = set(game.snake.as_list())
+        def cell_char(pos: tuple) -> str:
+            if not game.board.is_inside(pos):
+                return CellType.WALL
+            if pos in snake_set:
+                return CellType.SNAKE
+            if pos in game.green_apples:
+                return CellType.GREEN_APPLE
+            if pos == game.red_apple:
+                return CellType.RED_APPLE
+            return CellType.EMPTY
+
+        def ray(direction: str) -> list[str]:
+            dx, dy = DIRECTION_DELTAS[direction]
+            x, y = head
+            cells = []
+            while True:
+                x += dx
+                y += dy
+                pos = (x, y)
+                cells.append(cell_char(pos))
+                if not game.board.is_inside(pos):
+                    break
+            return cells
+        up_ray    = ray("UP")[::-1]
+        down_ray  = ray("DOWN")
+        left_ray  = ray("LEFT")[::-1]
+        right_ray = ray("RIGHT")
+        indent = " " * len(left_ray)
+        h_line = "".join(left_ray) + "H" + "".join(right_ray)
+        print(f"Action: {action}")
+        for ch in up_ray:
+            print(f"{indent}{ch}")
+        print(h_line)
+        for ch in down_ray:
+            print(f"{indent}{ch}")
+        print()
+

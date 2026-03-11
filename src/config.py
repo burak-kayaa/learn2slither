@@ -60,7 +60,6 @@ DIRECTION_DELTAS: dict[str, tuple[int, int]] = {
     Direction.RIGHT: (1, 0),
 }
 
-
 class CellType:
     EMPTY = "0"
     SNAKE = "S"
@@ -78,29 +77,58 @@ class Event(str, Enum):
     RED_APPLE = "RED_APPLE"
     MOVE = "MOVE"
     MAX_STEPS = "MAX_STEPS"
+
 class EpisodeStats:
     def __init__(self, steps: int, total_reward: float, score: int):
         self.steps = steps
         self.total_reward = total_reward
         self.score = score
-        
+
+class Colors:
+    BACKGROUND = (20, 20, 20)
+    GRID = (60, 60, 60)
+    SNAKE = (50, 120, 255)
+    SNAKE_HEAD = (100, 170, 255)
+    GREEN_APPLE = (0, 200, 0)
+    RED_APPLE = (220, 40, 40)
+
 OPPOSITE_DIRECTIONS = {
     Direction.UP: Direction.DOWN,
     Direction.DOWN: Direction.UP,
     Direction.LEFT: Direction.RIGHT,
     Direction.RIGHT: Direction.LEFT,
 }
-
-class Colors:
-    BACKGROUND = (20, 20, 20)
-    GRID = (60, 60, 60)
-    SNAKE = (50, 120, 255)
-    GREEN_APPLE = (0, 200, 0)
-    RED_APPLE = (220, 40, 40)
+    
     
 REASON_LABELS = {
     Event.WALL_COLLISION: "Wall Collision",
     Event.SELF_COLLISION: "Self Collision",
     Event.ZERO_LENGTH: "Zero Length",
     Event.MAX_STEPS: "Max Steps",
+}
+
+@dataclass
+class RenderConfig:
+    cell_size: int = 60
+    delay_ms: int = 1
+    step_mode: bool = False
+    enabled: bool = True
+    
+@dataclass
+class EpisodeMetrics:
+    episode_index: int
+    steps: int
+    duration_seconds: float
+    total_reward: float
+    final_length: int
+    max_length: int
+    green_apples_eaten: int
+    red_apples_eaten: int
+    death_reason: str | None
+    
+RELATIVE_MAP: dict[str, tuple[str, str, str]] = {
+    Direction.RIGHT: (Direction.RIGHT, Direction.UP,   Direction.DOWN),
+    Direction.LEFT:  (Direction.LEFT,  Direction.DOWN,  Direction.UP),
+    Direction.UP:    (Direction.UP,    Direction.LEFT,  Direction.RIGHT),
+    Direction.DOWN:  (Direction.DOWN,  Direction.RIGHT, Direction.LEFT),
 }

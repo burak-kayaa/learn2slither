@@ -9,12 +9,10 @@ class AppleManager:
     def spawn_initial(board, snake) -> tuple[set[Position], Position]:
         green_apples: set[Position] = set()
         occupied = set(snake.as_list())
-
         for _ in range(AppleManager.GREEN_COUNT):
             pos = board.random_empty_cell(occupied)
             green_apples.add(pos)
             occupied.add(pos)
-
         red_apple = board.random_empty_cell(occupied)
         return green_apples, red_apple
 
@@ -23,7 +21,6 @@ class AppleManager:
         occupied = set(snake.as_list()) | set(green_apples)
         if red_apple is not None:
             occupied.add(red_apple)
-
         return board.random_empty_cell(occupied)
 
     @staticmethod

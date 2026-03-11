@@ -1,19 +1,11 @@
 from dataclasses import dataclass
-from src.config import ACTIONS, OPPOSITE_DIRECTIONS, Event, StepResult
+from src.config import ACTIONS, DIRECTION_DELTAS, OPPOSITE_DIRECTIONS, Event, StepResult
 
 from src.environment.board import Board
 from src.environment.snake import Snake
 from src.environment.apples import AppleManager
 
 Position = tuple[int, int]
-
-DIRECTION_DELTAS = {
-    "UP": (0, -1),
-    "DOWN": (0, 1),
-    "LEFT": (-1, 0),
-    "RIGHT": (1, 0),
-}
-
 
 class Game:
     def __init__(self, width: int = 10, height: int = 10):
@@ -24,7 +16,7 @@ class Game:
             self.snake,
         )
         self.done = False
-
+    
     def reset(self) -> None:
         self.snake = Snake.create_default(self.board.width, self.board.height)
         self.green_apples, self.red_apple = AppleManager.spawn_initial(
@@ -32,11 +24,10 @@ class Game:
             self.snake,
         )
         self.done = False
-
+   
     def get_next_head(self, action: str) -> Position:
         if action not in DIRECTION_DELTAS:
             raise ValueError(f"Invalid action: {action}")
-
         dx, dy = DIRECTION_DELTAS[action]
         x, y = self.snake.head
         return (x + dx, y + dy)
@@ -92,21 +83,3 @@ class Game:
             "red_apple": self.red_apple,
             "done": self.done,
         }
-
-    def print_board(self) -> None:
-        grid = [["." for _ in range(self.board.width)] for _ in range(self.board.height)]
-        for x, y in self.green_apples:
-            grid[y][x] = "G"
-        if self.red_apple is not None:
-            rx, ry = self.red_apple
-            grid[ry][rx] = "R"
-        snake_positions = self.snake.as_list()
-        for i, (x, y) in enumerate(snake_positions):
-            grid[y][x] = "H" if i == 0 else "S"
-        for row in grid:
-            print(" ".join(row))
-        print()
-    
-    def get_valid_actions(self) -> list[str]:
-        opposite = OPPOSITE_DIRECTIONS[self.snake.direction]
-        return [action for action in ACTIONS if action != opposite]

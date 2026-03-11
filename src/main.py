@@ -1,3 +1,4 @@
+from src.config import BOARD_HEIGHT, BOARD_WIDTH
 from src.environment.board import Board
 from src.environment.game import Game
 from src.state.vision import VisionInterpreter
@@ -13,7 +14,7 @@ from src.utils.training_report import print_metrics_summary, summarize_metrics, 
 def main():
     args = parse_args()
     env = Game()
-    renderer = GameRenderer(10, 10, RenderConfig(
+    renderer = GameRenderer(BOARD_WIDTH, BOARD_HEIGHT, RenderConfig(
         delay_ms=args.delay if not args.step_by_step else 0,
         step_mode=args.step_by_step,
         enabled=args.render
@@ -22,7 +23,7 @@ def main():
         agent = QLearningAgent.load(args.load)
     else:
         agent = QLearningAgent()
-    if args.dontlearn:
+    if args.dont_learn:
         agent.learning_enabled = False
     metrics = train(env, agent, args.sessions, renderer if args.render else None)
     if args.save:

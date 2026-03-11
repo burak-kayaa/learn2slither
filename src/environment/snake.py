@@ -69,7 +69,6 @@ class Snake:
     def create_default(cls, board_width: int = 10, board_height: int = 10) -> "Snake":
         head_x = board_width // 2
         head_y = board_height // 2
-
         initial_body = [
             (head_x, head_y),
             (head_x - 1, head_y),
