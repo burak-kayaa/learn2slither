@@ -1,17 +1,18 @@
-from dataclasses import dataclass
 import pygame
 
 from src.config import Colors, RenderConfig
 
 
 class GameRenderer:
-    def __init__(self, board_width: int, board_height: int, config: RenderConfig):
+    def __init__(
+        self, board_width: int, board_height: int, config: RenderConfig
+    ):
         self.board_width = board_width
         self.board_height = board_height
         self.config = config
         self.initialized = False
-        self.screen = None
-        
+        self.clock = None
+
     def initialize(self) -> None:
         if not self.config.enabled or self.initialized:
             return
@@ -21,7 +22,7 @@ class GameRenderer:
         self.screen = pygame.display.set_mode((width, height))
         pygame.display.set_caption("Learn2Slither")
         self.initialized = True
-        
+
     def render(self, env) -> None:
         if not self.config.enabled:
             return
@@ -37,7 +38,7 @@ class GameRenderer:
             self.wait_for_step()
         elif self.config.delay_ms > 0:
             pygame.time.delay(self.config.delay_ms)
-            
+
     def wait_for_step(self) -> None:
         waiting = True
         while waiting:
@@ -47,8 +48,7 @@ class GameRenderer:
                     raise SystemExit
                 elif event.type == pygame.KEYDOWN:
                     waiting = False
-    
-            
+
     def _draw_grid(self) -> None:
         cell = self.config.cell_size
         color = Colors.GRID
@@ -56,7 +56,7 @@ class GameRenderer:
             for x in range(self.board_width):
                 rect = pygame.Rect(x * cell, y * cell, cell, cell)
                 pygame.draw.rect(self.screen, color, rect, 1)
-                
+
     def _draw_snake(self, env) -> None:
         cell = self.config.cell_size
         body_color = Colors.SNAKE
@@ -66,8 +66,7 @@ class GameRenderer:
             rect = pygame.Rect(x * cell, y * cell, cell, cell)
             color = head_color if index == 0 else body_color
             pygame.draw.rect(self.screen, color, rect)
-            
-    
+
     def _draw_apples(self, env) -> None:
         cell = self.config.cell_size
         for (x, y) in env.green_apples:
@@ -77,8 +76,7 @@ class GameRenderer:
             x, y = env.red_apple
             rect = pygame.Rect(x * cell, y * cell, cell, cell)
             pygame.draw.rect(self.screen, Colors.RED_APPLE, rect)
-            
-            
+
     def _handle_basic_events(self) -> None:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

@@ -14,10 +14,12 @@ def _bucket_distance(dist: int) -> str:
 class VisionInterpreter:
     @staticmethod
     def extract(game: Game) -> dict[str, tuple[str, str]]:
-        """Returns (object, distance_bucket) for the first object in each direction.
+        """Returns (object, distance_bucket) for the first object
+        in each direction.
 
-        The snake can see all cells along each axis (ray-casting). Reports the
-        first non-empty cell encountered, or WALL when the board edge is reached.
+        The snake can see all cells along each axis (ray-casting).
+        Reports the first non-empty cell encountered, or WALL when
+        the board edge is reached.
         Distance is bucketed as: CLOSE (1), NEAR (2-3), FAR (4+).
         """
         head = game.snake.head
@@ -55,6 +57,7 @@ class VisionInterpreter:
         """
         head = game.snake.head
         snake_set = set(game.snake.as_list())
+
         def cell_char(pos: tuple) -> str:
             if not game.board.is_inside(pos):
                 return CellType.WALL
@@ -78,9 +81,9 @@ class VisionInterpreter:
                 if not game.board.is_inside(pos):
                     break
             return cells
-        up_ray    = ray("UP")[::-1]
-        down_ray  = ray("DOWN")
-        left_ray  = ray("LEFT")[::-1]
+        up_ray = ray("UP")[::-1]
+        down_ray = ray("DOWN")
+        left_ray = ray("LEFT")[::-1]
         right_ray = ray("RIGHT")
         indent = " " * len(left_ray)
         h_line = "".join(left_ray) + "H" + "".join(right_ray)
@@ -91,4 +94,3 @@ class VisionInterpreter:
         for ch in down_ray:
             print(f"{indent}{ch}")
         print()
-

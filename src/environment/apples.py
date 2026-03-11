@@ -2,6 +2,7 @@
 
 Position = tuple[int, int]
 
+
 class AppleManager:
     GREEN_COUNT = 2
 
@@ -17,7 +18,9 @@ class AppleManager:
         return green_apples, red_apple
 
     @staticmethod
-    def spawn_green(board, snake, green_apples: set[Position], red_apple: Position | None) -> Position:
+    def spawn_green(
+        board, snake, green_apples: set[Position], red_apple: Position | None
+    ) -> Position:
         occupied = set(snake.as_list()) | set(green_apples)
         if red_apple is not None:
             occupied.add(red_apple)

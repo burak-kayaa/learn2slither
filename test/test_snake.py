@@ -1,4 +1,3 @@
-from src.config import Direction
 from src.environment.game import Position
 from src.environment.snake import Snake
 
@@ -15,7 +14,7 @@ def test_snake_initialization() -> None:
     assert snake.head == Position([2, 2])
     assert snake.tail == Position([0, 2])
 
-    
+
 def test_snake_initialization_empty_body() -> None:
     try:
         Snake([])
@@ -66,20 +65,20 @@ def test_snake_shrinks() -> None:
     ]
     snake.shrink(2)
     assert list(snake.body) == []
-    
-    
+
+
 def test_snake_occupies() -> None:
     snake = Snake([
         Position([2, 2]),
         Position([1, 2]),
         Position([0, 2]),
     ])
-    assert snake.occupies(Position([2, 2])) == True
-    assert snake.occupies(Position([1, 2])) == True
-    assert snake.occupies(Position([0, 2])) == True
-    assert snake.occupies(Position([3, 2])) == False
-    
-    
+    assert snake.occupies(Position([2, 2]))
+    assert snake.occupies(Position([1, 2]))
+    assert snake.occupies(Position([0, 2]))
+    assert not snake.occupies(Position([3, 2]))
+
+
 def test_snake_create_default() -> None:
     snake = Snake.create_default(board_width=10, board_height=10)
     assert list(snake.body) == [
@@ -87,8 +86,8 @@ def test_snake_create_default() -> None:
         Position([4, 5]),
         Position([3, 5]),
     ]
-    
-    
+
+
 def test_snake_grows_and_shrinks() -> None:
     snake = Snake([
         Position([2, 2]),

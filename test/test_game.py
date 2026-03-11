@@ -1,5 +1,3 @@
-import pytest
-
 from src.config import Event
 from src.environment.game import Game
 
@@ -13,7 +11,7 @@ def test_game_initialization():
     assert game.red_apple is not None
     assert not game.done
 
-    
+
 def test_game_reset():
     game = Game(width=10, height=10)
     game.step("UP")
@@ -22,7 +20,7 @@ def test_game_reset():
     assert len(game.green_apples) == 2
     assert game.red_apple is not None
     assert not game.done
-    
+
 
 def test_game_step_wall_collision():
     game = Game(width=5, height=5)
@@ -31,8 +29,8 @@ def test_game_step_wall_collision():
     assert result.event == Event.WALL_COLLISION
     assert result.done
     assert game.done
-    
-    
+
+
 def test_game_step_self_collision():
     game = Game(width=5, height=5)
     game.red_apple = None
@@ -51,9 +49,8 @@ def test_game_step_self_collision():
     assert result.event == Event.SELF_COLLISION
     assert result.done
     assert game.done
-    
-    
-    
+
+
 def test_game_step_green_apple():
     game = Game(width=5, height=5)
     head_x, head_y = game.snake.head
@@ -64,21 +61,21 @@ def test_game_step_green_apple():
     assert not result.done
     assert result.score_delta == 1
     assert len(game.snake.body) == 4
-    
-    
+
+
 def test_game_step_red_apple():
     game = Game(width=5, height=5)
     head_x, head_y = game.snake.head
     game.green_apples.clear()
     red_apple_pos = (head_x, head_y - 1)
-    game.red_apple = red_apple_pos  
+    game.red_apple = red_apple_pos
     result = game.step("UP")
     assert result.event == Event.RED_APPLE
     assert not result.done
     assert result.score_delta == -1
     assert len(game.snake.body) == 2
-    
-    
+
+
 def test_game_step_zero_length():
     game = Game(width=8, height=8)
     game.green_apples.clear()
@@ -89,9 +86,9 @@ def test_game_step_zero_length():
         game.red_apple = red_apple_pos
         result = game.step("UP")
     assert result.event == Event.ZERO_LENGTH
-    assert result.done    
+    assert result.done
 
-    
+
 def test_game_step_after_game_over():
     game = Game(width=5, height=5)
     for _ in range(3):

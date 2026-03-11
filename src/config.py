@@ -15,11 +15,13 @@ LOOP_WINDOW: int = 20
 
 MODEL_SAVE_PATH_SRC: str = "./models"
 
+
 @dataclass
 class StepResult:
     event: Event
     done: bool
     score_delta: int = 0
+
 
 @dataclass(frozen=True)
 class RewardConfig:
@@ -47,10 +49,26 @@ ACTIONS: list[str] = [
 RELATIVE_ACTIONS: list[str] = ["AHEAD", "TURN_LEFT", "TURN_RIGHT"]
 
 RELATIVE_TO_ABSOLUTE: dict[str, dict[str, str]] = {
-    Direction.RIGHT: {"AHEAD": Direction.RIGHT, "TURN_LEFT": Direction.UP,   "TURN_RIGHT": Direction.DOWN},
-    Direction.LEFT:  {"AHEAD": Direction.LEFT,  "TURN_LEFT": Direction.DOWN, "TURN_RIGHT": Direction.UP},
-    Direction.UP:    {"AHEAD": Direction.UP,    "TURN_LEFT": Direction.LEFT,  "TURN_RIGHT": Direction.RIGHT},
-    Direction.DOWN:  {"AHEAD": Direction.DOWN,  "TURN_LEFT": Direction.RIGHT, "TURN_RIGHT": Direction.LEFT},
+    Direction.RIGHT: {
+        "AHEAD": Direction.RIGHT,
+        "TURN_LEFT": Direction.UP,
+        "TURN_RIGHT": Direction.DOWN,
+    },
+    Direction.LEFT: {
+        "AHEAD": Direction.LEFT,
+        "TURN_LEFT": Direction.DOWN,
+        "TURN_RIGHT": Direction.UP,
+    },
+    Direction.UP: {
+        "AHEAD": Direction.UP,
+        "TURN_LEFT": Direction.LEFT,
+        "TURN_RIGHT": Direction.RIGHT,
+    },
+    Direction.DOWN: {
+        "AHEAD": Direction.DOWN,
+        "TURN_LEFT": Direction.RIGHT,
+        "TURN_RIGHT": Direction.LEFT,
+    },
 }
 
 DIRECTION_DELTAS: dict[str, tuple[int, int]] = {
@@ -59,6 +77,7 @@ DIRECTION_DELTAS: dict[str, tuple[int, int]] = {
     Direction.DOWN: (0, 1),
     Direction.RIGHT: (1, 0),
 }
+
 
 class CellType:
     EMPTY = "0"
@@ -78,11 +97,13 @@ class Event(str, Enum):
     MOVE = "MOVE"
     MAX_STEPS = "MAX_STEPS"
 
+
 class EpisodeStats:
     def __init__(self, steps: int, total_reward: float, score: int):
         self.steps = steps
         self.total_reward = total_reward
         self.score = score
+
 
 class Colors:
     BACKGROUND = (20, 20, 20)
@@ -92,14 +113,15 @@ class Colors:
     GREEN_APPLE = (0, 200, 0)
     RED_APPLE = (220, 40, 40)
 
+
 OPPOSITE_DIRECTIONS = {
     Direction.UP: Direction.DOWN,
     Direction.DOWN: Direction.UP,
     Direction.LEFT: Direction.RIGHT,
     Direction.RIGHT: Direction.LEFT,
 }
-    
-    
+
+
 REASON_LABELS = {
     Event.WALL_COLLISION: "Wall Collision",
     Event.SELF_COLLISION: "Self Collision",
@@ -107,13 +129,15 @@ REASON_LABELS = {
     Event.MAX_STEPS: "Max Steps",
 }
 
+
 @dataclass
 class RenderConfig:
     cell_size: int = 60
     delay_ms: int = 1
     step_mode: bool = False
     enabled: bool = True
-    
+
+
 @dataclass
 class EpisodeMetrics:
     episode_index: int
@@ -125,7 +149,8 @@ class EpisodeMetrics:
     green_apples_eaten: int
     red_apples_eaten: int
     death_reason: str | None
-    
+
+
 RELATIVE_MAP: dict[str, tuple[str, str, str]] = {
     Direction.RIGHT: (Direction.RIGHT, Direction.UP,   Direction.DOWN),
     Direction.LEFT:  (Direction.LEFT,  Direction.DOWN,  Direction.UP),

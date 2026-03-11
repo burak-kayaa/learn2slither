@@ -26,7 +26,7 @@ def test_board_dimensions_must_be_positive() -> None:
         Board(width=-1, height=10)
     with pytest.raises(ValueError):
         Board(width=10, height=-1)
-        
+
 
 def test_board_initialization() -> None:
     board = Board(width=5, height=5)

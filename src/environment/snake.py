@@ -30,7 +30,9 @@ class Snake:
         return pos in self.body
 
     def move(self, new_head: Position, grow: bool = False) -> None:
-        """Move the snake to a new head position. If grow is True, the snake will grow by one segment.
+        """Move the snake to a new head position.
+
+        If grow is True, the snake will grow by one segment.
         """
         self.direction = self._direction_from_move(new_head)
         self.body.appendleft(new_head)
@@ -54,7 +56,6 @@ class Snake:
             if self.body:
                 self.body.pop()
 
-
     def _infer_initial_direction(self) -> str:
         if len(self.body) < 2:
             return Direction.RIGHT
@@ -66,7 +67,9 @@ class Snake:
             return Direction.RIGHT if head_x > neck_x else Direction.LEFT
 
     @classmethod
-    def create_default(cls, board_width: int = 10, board_height: int = 10) -> "Snake":
+    def create_default(
+        cls, board_width: int = 10, board_height: int = 10
+    ) -> "Snake":
         head_x = board_width // 2
         head_y = board_height // 2
         initial_body = [

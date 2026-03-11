@@ -1,12 +1,16 @@
 from src.config import RELATIVE_MAP
 
+
 class StateEncoder:
     @staticmethod
-    def encode(vision: dict[str, tuple[str, str]], current_direction: str) -> tuple:
+    def encode(
+        vision: dict[str, tuple[str, str]], current_direction: str
+    ) -> tuple:
         """Encodes vision into a rotation-invariant state tuple.
 
-        Each direction contributes (object, distance_bucket), giving a 6-element
-        tuple: (ahead_obj, ahead_dist, left_obj, left_dist, right_obj, right_dist).
+        Each direction contributes (object, distance_bucket),
+        giving a 6-element tuple:
+        (ahead_obj, ahead_dist, left_obj, left_dist, right_obj, right_dist).
         """
         ahead, rel_left, rel_right = RELATIVE_MAP[current_direction]
         return (

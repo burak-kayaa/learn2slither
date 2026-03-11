@@ -1,19 +1,25 @@
-from src.environment.board import Board
 from src.environment.game import Game
 from src.state.vision import VisionInterpreter
 from src.state.encoder import StateEncoder
 from src.agent.q_learning_agent import QLearningAgent
-
 from src.agent.reward import compute_reward
-from src.config import REASON_LABELS, EpisodeMetrics, Event, RELATIVE_ACTIONS, RELATIVE_TO_ABSOLUTE, MAX_STEPS_PER_EPISODE, LOOP_WINDOW, RewardConfig
+from src.config import (
+    REASON_LABELS, EpisodeMetrics, Event,
+    RELATIVE_ACTIONS, RELATIVE_TO_ABSOLUTE,
+    MAX_STEPS_PER_EPISODE, LOOP_WINDOW, RewardConfig,
+)
 import time
 from collections import deque
-from dataclasses import dataclass
 
 from src.ui.renderer import GameRenderer
 
 
-def run_episode(env: Game, agent: QLearningAgent, episode_index: int, renderer: GameRenderer | None) -> EpisodeMetrics:
+def run_episode(
+    env: Game,
+    agent: QLearningAgent,
+    episode_index: int,
+    renderer: GameRenderer | None
+) -> EpisodeMetrics:
     env.reset()
     start_time = time.perf_counter()
     steps = 0
@@ -50,7 +56,9 @@ def run_episode(env: Game, agent: QLearningAgent, episode_index: int, renderer: 
             next_state_key = state_key
         else:
             next_vision = VisionInterpreter.extract(env)
-            next_state_key = StateEncoder.encode(next_vision, env.snake.direction)
+            next_state_key = StateEncoder.encode(
+                next_vision, env.snake.direction
+            )
         agent.learn(
             state_key=state_key,
             action=rel_action,
@@ -63,10 +71,13 @@ def run_episode(env: Game, agent: QLearningAgent, episode_index: int, renderer: 
             renderer.render(env)
         done = step_result.done
         if not done and steps >= MAX_STEPS_PER_EPISODE:
-            death_reason = REASON_LABELS.get(str(Event.MAX_STEPS), str(Event.MAX_STEPS))
+            death_reason = REASON_LABELS.get(
+                str(Event.MAX_STEPS), str(Event.MAX_STEPS)
+            )
             done = True
     duration_seconds = time.perf_counter() - start_time
-    print(f"[Episode {episode_index}] Game Over - Length: {len(env.snake)} - Steps: {steps}")
+    print(f"[Episode {episode_index}] Game Over - Length: \
+            {len(env.snake)} - Steps: {steps}")
     return EpisodeMetrics(
         episode_index=episode_index,
         steps=steps,
@@ -80,11 +91,17 @@ def run_episode(env: Game, agent: QLearningAgent, episode_index: int, renderer: 
     )
 
 
-def train(env: Game, agent: QLearningAgent, sessions: int, renderer: GameRenderer | None) -> list[EpisodeMetrics]:
+def train(
+    env: Game,
+    agent: QLearningAgent,
+    sessions: int,
+    renderer: GameRenderer | None
+) -> list[EpisodeMetrics]:
     all_metrics = []
     exploit_start = max(1, int(sessions * 0.8))
     if agent.epsilon > agent.epsilon_min:
-        agent.epsilon_decay = (agent.epsilon_min / agent.epsilon) ** (1.0 / exploit_start)
+        agent.epsilon_decay = (agent.epsilon_min / agent.epsilon) \
+            ** (1.0 / exploit_start)
     for episode in range(1, sessions + 1):
         metrics = run_episode(
             env=env,

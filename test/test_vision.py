@@ -1,9 +1,7 @@
-import pytest
-
 from src.environment.snake import Snake
-from src.environment.board import Board
 from src.environment.game import Game
 from src.state.vision import VisionInterpreter
+
 
 def test_vision_extraction():
     game = Game(width=5, height=5)
@@ -13,8 +11,8 @@ def test_vision_extraction():
     vision = VisionInterpreter.extract(game)
     assert vision["UP"] == ("SNAKE", "CLOSE")         # (2,1) dist=1 → CLOSE
     assert vision["DOWN"] == ("RED_APPLE", "CLOSE")   # (2,3) dist=1 → CLOSE
-    assert vision["LEFT"] == ("WALL", "NEAR")          # (1,2),(0,2) boş → (-1,2) dist=3 → NEAR
-    assert vision["RIGHT"] == ("GREEN_APPLE", "CLOSE") # (3,2) dist=1 → CLOSE
+    assert vision["LEFT"] == ("WALL", "NEAR")  # wall at (-1,2), dist=3 → NEAR
+    assert vision["RIGHT"] == ("GREEN_APPLE", "CLOSE")  # (3,2) dist=1 → CLOSE
 
 
 def test_vision_empty():

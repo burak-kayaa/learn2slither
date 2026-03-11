@@ -35,8 +35,13 @@ class Board:
         if not empty:
             raise ValueError("No empty cells available")
         return random.choice(empty)
-    
-    def print_board(self, snake_positions: Iterable[Position], green_apples: Iterable[Position], red_apple: Position) -> None:
+
+    def print_board(
+        self,
+        snake_positions: Iterable[Position],
+        green_apples: Iterable[Position],
+        red_apple: Position,
+    ) -> None:
         print(CellType.WALL * (self.width + 2))
         for y in range(self.height):
             row = ""

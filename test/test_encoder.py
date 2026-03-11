@@ -1,5 +1,3 @@
-import pytest
-
 from src.state.encoder import StateEncoder
 
 
@@ -12,7 +10,8 @@ def test_state_encoder_facing_right():
         "RIGHT": ("WALL", "FAR"),
     }
     # ahead=(WALL,FAR), rel_left=(WALL,CLOSE), rel_right=(GREEN_APPLE,NEAR)
-    assert StateEncoder.encode(vision, "RIGHT") == ("WALL", "FAR", "WALL", "CLOSE", "GREEN_APPLE", "NEAR")
+    result = StateEncoder.encode(vision, "RIGHT")
+    assert result == ("WALL", "FAR", "WALL", "CLOSE", "GREEN_APPLE", "NEAR")
 
 
 def test_state_encoder_facing_up():
@@ -24,7 +23,8 @@ def test_state_encoder_facing_up():
         "RIGHT": ("WALL", "FAR"),
     }
     # ahead=(GREEN_APPLE,NEAR), rel_left=(WALL,CLOSE), rel_right=(WALL,FAR)
-    assert StateEncoder.encode(vision, "UP") == ("GREEN_APPLE", "NEAR", "WALL", "CLOSE", "WALL", "FAR")
+    result = StateEncoder.encode(vision, "UP")
+    assert result == ("GREEN_APPLE", "NEAR", "WALL", "CLOSE", "WALL", "FAR")
 
 
 def test_state_encoder_facing_down():
@@ -36,4 +36,5 @@ def test_state_encoder_facing_down():
         "RIGHT": ("SNAKE", "CLOSE"),
     }
     # ahead=(GREEN_APPLE,NEAR), rel_left=(SNAKE,CLOSE), rel_right=(WALL,CLOSE)
-    assert StateEncoder.encode(vision, "DOWN") == ("GREEN_APPLE", "NEAR", "SNAKE", "CLOSE", "WALL", "CLOSE")
+    result = StateEncoder.encode(vision, "DOWN")
+    assert result == ("GREEN_APPLE", "NEAR", "SNAKE", "CLOSE", "WALL", "CLOSE")
