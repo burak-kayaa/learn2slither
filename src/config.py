@@ -22,7 +22,7 @@ class StepResult:
 class RewardConfig:
     green_apple: float = 10.0
     red_apple: float = -8.0
-    step: float = -0.1
+    step: float = -0.3
     game_over: float = -20.0
 
 
@@ -86,3 +86,10 @@ OPPOSITE_DIRECTIONS = {
     Direction.LEFT: Direction.RIGHT,
     Direction.RIGHT: Direction.LEFT,
 }
+
+class Colors:
+    BACKGROUND = (20, 20, 20)
+    GRID = (60, 60, 60)
+    SNAKE = (50, 120, 255)
+    GREEN_APPLE = (0, 200, 0)
+    RED_APPLE = (220, 40, 40)

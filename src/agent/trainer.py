@@ -9,6 +9,8 @@ from src.config import Event, RELATIVE_ACTIONS, RELATIVE_TO_ABSOLUTE
 import time
 from dataclasses import dataclass
 
+from src.ui.renderer import GameRenderer
+
 
 @dataclass
 class EpisodeMetrics:
@@ -23,7 +25,7 @@ class EpisodeMetrics:
     death_reason: str | None
 
 
-def run_episode(env: Game, agent: QLearningAgent, episode_index: int) -> EpisodeMetrics:
+def run_episode(env: Game, agent: QLearningAgent, episode_index: int, renderer: GameRenderer | None) -> EpisodeMetrics:
     env.reset()
     start_time = time.perf_counter()
     steps = 0
@@ -61,6 +63,8 @@ def run_episode(env: Game, agent: QLearningAgent, episode_index: int) -> Episode
             done=step_result.done,
             valid_next_actions=RELATIVE_ACTIONS,
         )
+        if renderer:
+            renderer.render(env)
         done = step_result.done
     duration_seconds = time.perf_counter() - start_time
     return EpisodeMetrics(
@@ -76,7 +80,7 @@ def run_episode(env: Game, agent: QLearningAgent, episode_index: int) -> Episode
     )
 
 
-def train(env: Game, agent: QLearningAgent, sessions: int) -> list[EpisodeMetrics]:
+def train(env: Game, agent: QLearningAgent, sessions: int, renderer: GameRenderer | None) -> list[EpisodeMetrics]:
     all_metrics = []
     exploit_start = max(1, int(sessions * 0.8))
     if agent.epsilon > agent.epsilon_min:
@@ -86,6 +90,7 @@ def train(env: Game, agent: QLearningAgent, sessions: int) -> list[EpisodeMetric
             env=env,
             agent=agent,
             episode_index=episode,
+            renderer=renderer
         )
         all_metrics.append(metrics)
         agent.decay_epsilon()
