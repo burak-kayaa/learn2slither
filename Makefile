@@ -9,3 +9,6 @@ ui:
 
 t:
 	@uv run pytest
+
+log:
+	@cat log.txt | grep -oP 'Length:\s+\K\d+' log.txt | sort -n | tail -1 

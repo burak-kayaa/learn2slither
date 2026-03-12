@@ -1,4 +1,5 @@
 from collections import deque
+import random
 
 from src.config import Direction
 
@@ -70,8 +71,9 @@ class Snake:
     def create_default(
         cls, board_width: int = 10, board_height: int = 10
     ) -> "Snake":
-        head_x = board_width // 2
-        head_y = board_height // 2
+        # place snake random place
+        head_x = random.randint(2, board_width - 1)
+        head_y = random.randint(0, board_height - 1)
         initial_body = [
             (head_x, head_y),
             (head_x - 1, head_y),
