@@ -76,8 +76,9 @@ def run_episode(
             )
             done = True
     duration_seconds = time.perf_counter() - start_time
-    print(f"[Episode {episode_index}] Game Over - Length: \
-            {len(env.snake)} - Steps: {steps}")
+    if not agent.learning_enabled:
+        print(f"[Episode {episode_index}] Game Over - Length: \
+                {len(env.snake)} - Steps: {steps}")
     return EpisodeMetrics(
         episode_index=episode_index,
         steps=steps,

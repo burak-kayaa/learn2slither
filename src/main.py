@@ -8,10 +8,14 @@ from src.utils.training_report import (
     print_metrics_summary,
     summarize_metrics
 )
+from src.ui.app import run_app
 
 
 def main():
     args = parse_args()
+    if args.ui:
+        run_app()
+        return
     env = Game()
     renderer = GameRenderer(BOARD_WIDTH, BOARD_HEIGHT, RenderConfig(
         delay_ms=args.delay if not args.step_by_step else 0,

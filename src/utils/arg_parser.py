@@ -25,4 +25,8 @@ def parse_args():
         "--delay", type=int, default=0,
         help="Delay in ms between steps (overridden by --step-by-step)"
     )
+    parser.add_argument(
+        "--ui", action="store_true",
+        help="Launch the full pygame UI (lobby, config, run, results)"
+    )
     return parser.parse_args()
