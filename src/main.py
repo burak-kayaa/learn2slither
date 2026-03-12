@@ -16,12 +16,19 @@ def main():
     if args.ui:
         run_app()
         return
-    env = Game()
-    renderer = GameRenderer(BOARD_WIDTH, BOARD_HEIGHT, RenderConfig(
-        delay_ms=args.delay if not args.step_by_step else 0,
-        step_mode=args.step_by_step,
-        enabled=args.render
-    ))
+    env = Game(
+        width=args.width if args.width else BOARD_WIDTH,
+        height=args.height if args.height else BOARD_HEIGHT
+    )
+    renderer = GameRenderer(
+        args.width if args.width else BOARD_WIDTH,
+        args.height if args.height else BOARD_HEIGHT,
+        RenderConfig(
+            delay_ms=args.delay if not args.step_by_step else 0,
+            step_mode=args.step_by_step,
+            enabled=args.render
+        )
+    )
     if args.load:
         agent = QLearningAgent.load(args.load)
     else:

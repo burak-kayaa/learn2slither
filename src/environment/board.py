@@ -10,8 +10,8 @@ Position = tuple[int, int]
 
 class Board:
     def __init__(self, width: int = BOARD_WIDTH, height: int = BOARD_HEIGHT):
-        if width <= 0 or height <= 0:
-            raise ValueError("Board dimensions must be positive integers")
+        if width < 10 or height < 10:
+            raise ValueError("Board dimensions must be at least 10x10")
         self.width = width
         self.height = height
 

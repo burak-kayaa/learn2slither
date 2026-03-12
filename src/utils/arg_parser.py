@@ -8,6 +8,12 @@ def parse_args():
     parser.add_argument("--sessions", type=int, default=1000,
                         help="Number of training sessions (episodes)")
     parser.add_argument(
+        "--width", type=int, default=10, help="Width of the game board"
+    )
+    parser.add_argument(
+        "--height", type=int, default=10, help="Height of the game board"
+    )
+    parser.add_argument(
         "--save", type=str, help="Path to save the trained agent"
     )
     parser.add_argument(

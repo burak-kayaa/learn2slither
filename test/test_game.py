@@ -23,8 +23,8 @@ def test_game_reset():
 
 
 def test_game_step_wall_collision():
-    game = Game(width=5, height=5)
-    for _ in range(3):
+    game = Game(width=10, height=10)
+    for _ in range(6):
         result = game.step("UP")
     assert result.event == Event.WALL_COLLISION
     assert result.done
@@ -32,7 +32,7 @@ def test_game_step_wall_collision():
 
 
 def test_game_step_self_collision():
-    game = Game(width=5, height=5)
+    game = Game(width=10, height=10)
     game.red_apple = None
     game.green_apples.clear()
     head_x, head_y = game.snake.head
@@ -52,7 +52,7 @@ def test_game_step_self_collision():
 
 
 def test_game_step_green_apple():
-    game = Game(width=5, height=5)
+    game = Game(width=10, height=10)
     head_x, head_y = game.snake.head
     green_apple_pos = (head_x, head_y - 1)
     game.green_apples.add(green_apple_pos)
@@ -64,7 +64,7 @@ def test_game_step_green_apple():
 
 
 def test_game_step_red_apple():
-    game = Game(width=5, height=5)
+    game = Game(width=10, height=10)
     head_x, head_y = game.snake.head
     game.green_apples.clear()
     red_apple_pos = (head_x, head_y - 1)
@@ -77,7 +77,7 @@ def test_game_step_red_apple():
 
 
 def test_game_step_zero_length():
-    game = Game(width=8, height=8)
+    game = Game(width=10, height=10)
     game.green_apples.clear()
     head_x, head_y = game.snake.head
     for _ in range(3):
@@ -90,8 +90,8 @@ def test_game_step_zero_length():
 
 
 def test_game_step_after_game_over():
-    game = Game(width=5, height=5)
-    for _ in range(3):
+    game = Game(width=10, height=10)
+    for _ in range(10):
         game.step("UP")
     assert game.done
     result = game.step("UP")

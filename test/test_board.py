@@ -29,8 +29,8 @@ def test_board_dimensions_must_be_positive() -> None:
 
 
 def test_board_initialization() -> None:
-    board = Board(width=5, height=5)
-    assert board.width == 5
-    assert board.height == 5
+    board = Board(width=10, height=10)
+    assert board.width == 10
+    assert board.height == 10
     assert board.is_inside(Position([2, 2])) is True
-    assert board.is_inside(Position([5, 5])) is False
+    assert board.is_inside(Position([10, 10])) is False

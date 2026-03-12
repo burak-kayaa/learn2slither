@@ -4,7 +4,7 @@ from src.state.vision import VisionInterpreter
 
 
 def test_vision_extraction():
-    game = Game(width=5, height=5)
+    game = Game(width=10, height=10)
     game.snake = Snake([(2, 2), (2, 1), (2, 0)])
     game.green_apples = [(3, 2), (4, 2)]
     game.red_apple = (2, 3)
@@ -16,10 +16,10 @@ def test_vision_extraction():
 
 
 def test_vision_empty():
-    game = Game(width=5, height=5)
+    game = Game(width=10, height=10)
     game.snake = Snake([(0, 0)])
     game.green_apples = []
-    game.red_apple = (4, 4)
+    game.red_apple = (9, 9)
     vision = VisionInterpreter.extract(game)
     assert vision["UP"] == ("WALL", "CLOSE")    # (0,-1) dist=1
     assert vision["DOWN"] == ("WALL", "FAR")    # (0,5) dist=5
