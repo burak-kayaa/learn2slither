@@ -110,6 +110,11 @@ class QLearningAgent:
     def load(cls, path: str | Path) -> "QLearningAgent":
         print(f"Loading agent from {path}...")
         path = Path(path)
-        with path.open("r", encoding="utf-8") as f:
-            data = json.load(f)
+        try:
+            with path.open("r", encoding="utf-8") as f:
+                data = json.load(f)
+        except FileNotFoundError as e:
+            print(f"Error loading agent from {path}: {e}")
+            exit(1)
         return cls.from_dict(data)
+        
