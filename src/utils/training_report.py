@@ -1,4 +1,3 @@
-from collections import Counter
 from dataclasses import dataclass
 from typing import Any
 
@@ -44,8 +43,3 @@ def print_metrics_summary(summary: MetricsSummary) -> None:
         f"Average Red Apples Eaten per Episode: "
         f"{summary.avg_red_apples:.2f}"
     )
-
-
-def death_reason_counts(metrics_list: list[Any]) -> dict[str, int]:
-    counter = Counter(str(m.death_reason) for m in metrics_list)
-    return dict(counter)

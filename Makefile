@@ -13,3 +13,5 @@ t:
 log:
 	@cat log.txt | grep -oP 'Length:\s+\K\d+' log.txt | sort -n | tail -1 
 
+lint:
+	@uv run flake8 src test

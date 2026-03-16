@@ -30,7 +30,7 @@ def main():
         )
     )
     if args.load:
-            agent = QLearningAgent.load(args.load)
+        agent = QLearningAgent.load(args.load)
     else:
         agent = QLearningAgent()
     if args.dont_learn:

@@ -86,12 +86,3 @@ class Game:
                 event=Event.RED_APPLE, done=False, score_delta=-1
             )
         return StepResult(event=Event.MOVE, done=False, score_delta=0)
-
-    def get_state_snapshot(self) -> dict:
-        return {
-            "snake": self.snake.as_list(),
-            "head": self.snake.head,
-            "green_apples": list(self.green_apples),
-            "red_apple": self.red_apple,
-            "done": self.done,
-        }
