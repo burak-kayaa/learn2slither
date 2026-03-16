@@ -1,5 +1,10 @@
 from src.config import Event
 from src.environment.game import Game
+from src.environment.snake import Snake
+
+
+def _set_snake(game: Game, body: list[tuple[int, int]]) -> None:
+    game.snake = Snake(body)
 
 
 def test_game_initialization():
@@ -24,8 +29,11 @@ def test_game_reset():
 
 def test_game_step_wall_collision():
     game = Game(width=10, height=10)
-    for _ in range(6):
-        result = game.step("UP")
+    _set_snake(game, [(5, 1), (4, 1), (3, 1)])
+    game.green_apples.clear()
+    game.red_apple = None
+    game.step("UP")
+    result = game.step("UP")
     assert result.event == Event.WALL_COLLISION
     assert result.done
     assert game.done
@@ -33,19 +41,10 @@ def test_game_step_wall_collision():
 
 def test_game_step_self_collision():
     game = Game(width=10, height=10)
+    _set_snake(game, [(2, 2), (2, 3), (3, 3), (3, 2)])
     game.red_apple = None
     game.green_apples.clear()
-    head_x, head_y = game.snake.head
-    green_apple_pos = (head_x, head_y - 1)
-    game.green_apples.add(green_apple_pos)
-    game.step("UP")
-    head_x, head_y = game.snake.head
-    green_apple_pos = (head_x, head_y - 1)
-    game.green_apples.add(green_apple_pos)
-    game.step("UP")
-    game.step("LEFT")
-    game.step("DOWN")
-    result = game.step("RIGHT")
+    result = game.step("DOWN")
     assert result.event == Event.SELF_COLLISION
     assert result.done
     assert game.done
@@ -53,8 +52,10 @@ def test_game_step_self_collision():
 
 def test_game_step_green_apple():
     game = Game(width=10, height=10)
-    head_x, head_y = game.snake.head
-    green_apple_pos = (head_x, head_y - 1)
+    _set_snake(game, [(5, 5), (4, 5), (3, 5)])
+    game.green_apples.clear()
+    game.red_apple = None
+    green_apple_pos = game.get_next_head("UP")
     game.green_apples.add(green_apple_pos)
     result = game.step("UP")
     assert result.event == Event.GREEN_APPLE
@@ -65,9 +66,9 @@ def test_game_step_green_apple():
 
 def test_game_step_red_apple():
     game = Game(width=10, height=10)
-    head_x, head_y = game.snake.head
+    _set_snake(game, [(5, 5), (4, 5), (3, 5)])
     game.green_apples.clear()
-    red_apple_pos = (head_x, head_y - 1)
+    red_apple_pos = game.get_next_head("UP")
     game.red_apple = red_apple_pos
     result = game.step("UP")
     assert result.event == Event.RED_APPLE
@@ -78,11 +79,10 @@ def test_game_step_red_apple():
 
 def test_game_step_zero_length():
     game = Game(width=10, height=10)
+    _set_snake(game, [(5, 5), (4, 5), (3, 5)])
     game.green_apples.clear()
-    head_x, head_y = game.snake.head
     for _ in range(3):
-        head_x, head_y = game.snake.head
-        red_apple_pos = (head_x, head_y - 1)
+        red_apple_pos = game.get_next_head("UP")
         game.red_apple = red_apple_pos
         result = game.step("UP")
     assert result.event == Event.ZERO_LENGTH
@@ -91,8 +91,11 @@ def test_game_step_zero_length():
 
 def test_game_step_after_game_over():
     game = Game(width=10, height=10)
-    for _ in range(10):
-        game.step("UP")
+    _set_snake(game, [(5, 1), (4, 1), (3, 1)])
+    game.green_apples.clear()
+    game.red_apple = None
+    game.step("UP")
+    game.step("UP")
     assert game.done
     result = game.step("UP")
     assert result.event == Event.GAME_ALREADY_OVER

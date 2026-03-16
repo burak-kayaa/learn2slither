@@ -81,11 +81,18 @@ def test_snake_occupies() -> None:
 
 def test_snake_create_default() -> None:
     snake = Snake.create_default(board_width=10, board_height=10)
-    assert list(snake.body) == [
-        Position([5, 5]),
-        Position([4, 5]),
-        Position([3, 5]),
-    ]
+    body = list(snake.body)
+    assert len(body) == 3
+
+    head_x, head_y = body[0]
+    neck_x, neck_y = body[1]
+    tail_x, tail_y = body[2]
+
+    assert 0 <= head_x < 10
+    assert 0 <= head_y < 10
+    assert (neck_x, neck_y) == (head_x - 1, head_y)
+    assert (tail_x, tail_y) == (head_x - 2, head_y)
+    assert 2 <= head_x <= 9
 
 
 def test_snake_grows_and_shrinks() -> None:
